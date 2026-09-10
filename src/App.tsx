@@ -10,11 +10,15 @@ import DeveloperDNA from './components/DeveloperDNA';
 import About from './components/About';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
+import ResumeModal from './components/ResumeModal';
 
 export default function App() {
   const [loaded, setLoaded] = useState(false);
+  const [resumeOpen, setResumeOpen] = useState(false);
 
   const handleLoadComplete = useCallback(() => setLoaded(true), []);
+  const handleOpenResume = useCallback(() => setResumeOpen(true), []);
+  const handleCloseResume = useCallback(() => setResumeOpen(false), []);
 
   return (
     <>
@@ -27,6 +31,9 @@ export default function App() {
       {/* Loading screen */}
       <LoadingScreen onComplete={handleLoadComplete} />
 
+      {/* Interactive Resume Modal */}
+      <ResumeModal isOpen={resumeOpen} onClose={handleCloseResume} />
+
       {/* Main content */}
       <div
         style={{
@@ -36,7 +43,7 @@ export default function App() {
         }}
         aria-hidden={!loaded}
       >
-        <Navbar />
+        <Navbar onOpenResume={handleOpenResume} />
 
         <main id="main-content">
           <Hero />

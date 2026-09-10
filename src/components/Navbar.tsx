@@ -2,7 +2,11 @@ import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { personal, navLinks } from '../data/portfolio';
 
-export default function Navbar() {
+interface NavbarProps {
+  onOpenResume?: () => void;
+}
+
+export default function Navbar({ onOpenResume }: NavbarProps) {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('');
@@ -159,11 +163,15 @@ export default function Navbar() {
                 );
               })}
 
-              <a
-                href={personal.resume || '/resume.pdf'}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group focus:outline-none"
+              <button
+                onClick={() => {
+                  if (onOpenResume) {
+                    onOpenResume();
+                  } else {
+                    window.open(personal.resume || '/resume.pdf', '_blank');
+                  }
+                }}
+                className="group focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
                 style={{
                   fontFamily: "'JetBrains Mono', monospace",
                   fontSize: '11px',
@@ -172,7 +180,7 @@ export default function Navbar() {
                   border: '1px solid rgba(200,255,0,0.3)',
                   padding: '8px 18px',
                   borderRadius: '3px',
-                  textDecoration: 'none',
+                  backgroundColor: 'transparent',
                   transition: 'all 0.2s',
                   cursor: 'none',
                 }}
@@ -184,9 +192,10 @@ export default function Navbar() {
                   e.currentTarget.style.backgroundColor = 'transparent';
                   e.currentTarget.style.borderColor = 'rgba(200,255,0,0.3)';
                 }}
+                aria-label="View Resume Modal"
               >
                 RESUME
-              </a>
+              </button>
             </nav>
 
             {/* Mobile Menu Toggle */}
@@ -261,11 +270,16 @@ export default function Navbar() {
                 </motion.button>
               ))}
 
-              <motion.a
-                href={personal.resume || '/resume.pdf'}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="focus:outline-none"
+              <motion.button
+                onClick={() => {
+                  setMenuOpen(false);
+                  if (onOpenResume) {
+                    onOpenResume();
+                  } else {
+                    window.open(personal.resume || '/resume.pdf', '_blank');
+                  }
+                }}
+                className="focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
                 style={{
                   fontFamily: "'JetBrains Mono', monospace",
                   fontSize: '13px',
@@ -274,15 +288,17 @@ export default function Navbar() {
                   backgroundColor: '#C8FF00',
                   padding: '10px 24px',
                   borderRadius: '3px',
+                  border: 'none',
                   textDecoration: 'none',
                   fontWeight: 700,
+                  cursor: 'pointer',
                 }}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.3 }}
               >
                 VIEW RESUME
-              </motion.a>
+              </motion.button>
 
               <motion.a
                 href={`mailto:${personal.email}`}
