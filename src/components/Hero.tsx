@@ -470,19 +470,24 @@ export default function Hero() {
                 />
 
                 {/* The photo */}
-                <img
-                  src="/asbin.jpg"
-                  alt="Asbin T S — Software Developer"
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'cover',
-                    objectPosition: 'center top',
-                    display: 'block',
-                    filter: 'contrast(1.04) brightness(0.97)',
-                  }}
-                  loading="eager"
-                />
+                <picture>
+                  <source srcSet="/asbin.webp" type="image/webp" />
+                  <img
+                    src="/asbin.jpg"
+                    alt="Asbin T S — Software Developer"
+                    width="420"
+                    height="560"
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover',
+                      objectPosition: 'center top',
+                      display: 'block',
+                      filter: 'contrast(1.04) brightness(0.97)',
+                    }}
+                    loading="eager"
+                  />
+                </picture>
 
                 {/* Name overlay at bottom */}
                 <div
@@ -553,7 +558,7 @@ export default function Hero() {
         <motion.div
           className="w-px h-12"
           style={{ backgroundColor: 'rgba(200,255,0,0.3)' }}
-          animate={{ scaleY: [1, 0.5, 1], opacity: [0.3, 1, 0.3] }}
+          animate={reduced ? {} : { scaleY: [1, 0.5, 1], opacity: [0.3, 1, 0.3] }}
           transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
         />
         <span

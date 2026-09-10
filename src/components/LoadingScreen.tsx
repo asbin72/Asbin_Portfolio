@@ -12,7 +12,6 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
 
   useEffect(() => {
     if (reduced) {
-      // Skip loading animation for reduced motion
       onComplete();
       return;
     }
@@ -27,6 +26,8 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
       clearTimeout(t3);
     };
   }, [onComplete, reduced]);
+
+  if (reduced) return null;
 
   return (
     <AnimatePresence>

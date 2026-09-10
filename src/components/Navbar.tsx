@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { personal, navLinks } from '../data/portfolio';
 
@@ -6,12 +6,54 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('');
+  const toggleButtonRef = useRef<HTMLButtonElement>(null);
+  const drawerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
+
+  // Trap focus and handle escape key when mobile menu is open
+  useEffect(() => {
+    if (!menuOpen) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setMenuOpen(false);
+        toggleButtonRef.current?.focus();
+        return;
+      }
+
+      if (e.key === 'Tab') {
+        const drawer = drawerRef.current;
+        if (!drawer) return;
+        const focusableElements = drawer.querySelectorAll<HTMLElement>(
+          'button:not([disabled]), [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+        if (focusableElements.length === 0) return;
+
+        const firstElement = focusableElements[0];
+        const lastElement = focusableElements[focusableElements.length - 1];
+
+        if (e.shiftKey) {
+          if (document.activeElement === firstElement) {
+            e.preventDefault();
+            lastElement.focus();
+          }
+        } else {
+          if (document.activeElement === lastElement) {
+            e.preventDefault();
+            firstElement.focus();
+          }
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [menuOpen]);
 
   // Track active section
   useEffect(() => {
@@ -149,6 +191,7 @@ export default function Navbar() {
 
             {/* Mobile Menu Toggle */}
             <button
+              ref={toggleButtonRef}
               className="lg:hidden flex flex-col gap-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent p-2"
               onClick={() => setMenuOpen(!menuOpen)}
               aria-label={menuOpen ? 'Close menu' : 'Open menu'}
@@ -181,6 +224,10 @@ export default function Navbar() {
       <AnimatePresence>
         {menuOpen && (
           <motion.div
+            ref={drawerRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Mobile navigation"
             className="fixed inset-0 z-[99] lg:hidden flex flex-col"
             style={{ backgroundColor: '#070707' }}
             initial={{ opacity: 0, y: -20 }}

@@ -4,11 +4,12 @@ import { useInView, useReducedMotion } from '../hooks/usePortfolio';
 import { stack } from '../data/portfolio';
 
 function FlowArrow() {
+  const reduced = useReducedMotion();
   return (
     <div className="flex flex-col items-center my-1" aria-hidden="true">
       <div className="w-px h-6" style={{ backgroundColor: 'rgba(200,255,0,0.3)' }} />
       <motion.div
-        animate={{ y: [0, 3, 0] }}
+        animate={reduced ? {} : { y: [0, 3, 0] }}
         transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
       >
         <svg width="10" height="6" viewBox="0 0 10 6" fill="none">

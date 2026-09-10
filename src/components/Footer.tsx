@@ -70,19 +70,26 @@ export default function Footer() {
               GITHUB
             </a>
 
-            {/* LinkedIn - placeholder since URL not provided */}
-            <span
+            <a
+              href={personal.resume || '/resume.pdf'}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2"
               style={{
                 fontFamily: "'JetBrains Mono', monospace",
                 fontSize: '11px',
                 letterSpacing: '0.1em',
-                color: 'rgba(255,255,255,0.2)',
-                cursor: 'default',
+                color: '#929292',
+                textDecoration: 'none',
+                transition: 'color 0.2s',
+                cursor: 'none',
               }}
-              title="LinkedIn URL not provided"
+              onMouseEnter={(e) => (e.currentTarget.style.color = '#C8FF00')}
+              onMouseLeave={(e) => (e.currentTarget.style.color = '#929292')}
+              aria-label="View Resume PDF in new tab"
             >
-              LINKEDIN
-            </span>
+              RESUME
+            </a>
 
             <a
               href={`mailto:${personal.email}`}

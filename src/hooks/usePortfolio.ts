@@ -45,9 +45,18 @@ export function useMousePosition() {
   const [pos, setPos] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
-    const handler = (e: MouseEvent) => setPos({ x: e.clientX, y: e.clientY });
-    window.addEventListener('mousemove', handler);
-    return () => window.removeEventListener('mousemove', handler);
+    let rafId = 0;
+    const handler = (e: MouseEvent) => {
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        setPos({ x: e.clientX, y: e.clientY });
+      });
+    };
+    window.addEventListener('mousemove', handler, { passive: true });
+    return () => {
+      cancelAnimationFrame(rafId);
+      window.removeEventListener('mousemove', handler);
+    };
   }, []);
 
   return pos;
@@ -57,27 +66,39 @@ export function useScrollProgress() {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
+    let rafId = 0;
     const handler = () => {
-      const scrolled = window.scrollY;
-      const total = document.documentElement.scrollHeight - window.innerHeight;
-      setProgress(total > 0 ? scrolled / total : 0);
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        const scrolled = window.scrollY;
+        const total = document.documentElement.scrollHeight - window.innerHeight;
+        setProgress(total > 0 ? scrolled / total : 0);
+      });
     };
     window.addEventListener('scroll', handler, { passive: true });
-    return () => window.removeEventListener('scroll', handler);
+    return () => {
+      cancelAnimationFrame(rafId);
+      window.removeEventListener('scroll', handler);
+    };
   }, []);
 
   return progress;
 }
 
 export function useIsMobile() {
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return window.innerWidth <= 1024 || window.matchMedia('(pointer: coarse)').matches;
+  });
 
   useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth <= 1024);
-    check();
-    window.addEventListener('resize', check);
+    const check = () => {
+      setIsMobile(window.innerWidth <= 1024 || window.matchMedia('(pointer: coarse)').matches);
+    };
+    window.addEventListener('resize', check, { passive: true });
     return () => window.removeEventListener('resize', check);
   }, []);
 
   return isMobile;
 }
+
