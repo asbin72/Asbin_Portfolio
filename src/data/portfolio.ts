@@ -70,7 +70,7 @@ export const projects: ProjectItem[] = [
       'Interactive shopping cart, category filtering & instant search',
       'High-performance UI built with React & modern styling',
     ],
-    tech: ['React', 'JavaScript', 'Tailwind CSS', 'Vite'],
+    tech: ['React 19', 'Java', 'Tailwind CSS', 'Vite', 'Lucide React', 'Cloudinary'],
     liveUrl: 'https://kss-petshop-official.vercel.app/',
     githubUrl: 'https://github.com/Kss-Official/KSS-PETSHOP-OFFICIAL',
     status: 'LIVE',
