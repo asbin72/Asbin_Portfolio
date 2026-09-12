@@ -17,6 +17,7 @@ export default function Contact({ onPlayClick, onPlayHover, onPlaySuccess }: Con
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
+  const [submittedAt, setSubmittedAt] = useState('');
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,6 +25,17 @@ export default function Contact({ onPlayClick, onPlayHover, onPlaySuccess }: Con
 
     setStatus('submitting');
     onPlayClick?.();
+
+    const timestamp = new Date().toLocaleString('en-IN', {
+      timeZone: 'Asia/Kolkata',
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: true,
+    });
 
     try {
       const response = await fetch(`https://formsubmit.co/ajax/${personal.email}`, {
@@ -33,10 +45,11 @@ export default function Contact({ onPlayClick, onPlayHover, onPlaySuccess }: Con
           Accept: 'application/json',
         },
         body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          message: formData.message,
-          _subject: `Portfolio Inquiry from ${formData.name}`,
+          Name: formData.name,
+          Email: formData.email,
+          Message: formData.message,
+          'Submitted At (IST)': `${timestamp} (IST)`,
+          _subject: `Portfolio Inquiry from ${formData.name} [${timestamp} IST]`,
           _template: 'table',
           _captcha: 'false',
         }),
@@ -45,6 +58,7 @@ export default function Contact({ onPlayClick, onPlayHover, onPlaySuccess }: Con
       const data = await response.json();
 
       if (response.ok && (data.success === 'true' || data.success === true || response.status === 200)) {
+        setSubmittedAt(timestamp);
         setStatus('success');
         onPlaySuccess?.();
         setFormData({ name: '', email: '', message: '' });
@@ -190,6 +204,14 @@ export default function Contact({ onPlayClick, onPlayHover, onPlaySuccess }: Con
                       <Check size={26} />
                     </div>
                     <h3 className="text-lg font-bold text-white font-sans">Message Sent Successfully!</h3>
+                    {submittedAt && (
+                      <div className="flex items-center justify-center pt-1 pb-1">
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-white/5 border border-white/10 font-mono text-[11px] text-neutral-300">
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#C8FF00]" />
+                          <span>Delivered: <strong className="text-white">{submittedAt} IST</strong></span>
+                        </span>
+                      </div>
+                    )}
                     <p className="text-xs font-mono text-neutral-400 max-w-sm mx-auto leading-relaxed">
                       Your inquiry has been emailed directly to <span className="text-[#C8FF00]">{personal.email}</span>. I'll get back to you shortly!
                     </p>

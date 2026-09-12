@@ -238,6 +238,7 @@ export default function Hero({ onPlayClick, onPlayHover }: HeroProps) {
       const now = new Date();
       setCurrentTime(
         now.toLocaleTimeString('en-US', {
+          timeZone: 'Asia/Kolkata',
           hour: '2-digit',
           minute: '2-digit',
           second: '2-digit',
