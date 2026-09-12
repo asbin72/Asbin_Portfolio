@@ -75,11 +75,33 @@ export default function CommandPalette({
     {
       id: 'work',
       category: 'Navigation',
-      label: 'View Selected Work',
-      description: 'Jump to College Management System showcase',
+      label: 'View Featured Work',
+      description: 'Explore Pawfectly Pet Shop & College Management System',
       icon: <Layers size={16} className="text-[#C8FF00]" />,
       shortcut: 'G W',
       action: () => scrollToSection('project'),
+    },
+    {
+      id: 'project-petshop',
+      category: 'Actions',
+      label: 'Open Pawfectly // KSS Pet Shop Live',
+      description: 'kss-petshop-official.vercel.app',
+      icon: <ExternalLink size={16} className="text-[#C8FF00]" />,
+      action: () => {
+        onClose();
+        window.open('https://kss-petshop-official.vercel.app/', '_blank', 'noopener,noreferrer');
+      },
+    },
+    {
+      id: 'project-college',
+      category: 'Actions',
+      label: 'Open College Management System Live',
+      description: 'college-management-lovat.vercel.app',
+      icon: <ExternalLink size={16} className="text-[#C8FF00]" />,
+      action: () => {
+        onClose();
+        window.open('https://college-management-lovat.vercel.app/', '_blank', 'noopener,noreferrer');
+      },
     },
     {
       id: 'experience',

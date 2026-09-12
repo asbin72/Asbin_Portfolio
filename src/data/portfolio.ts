@@ -43,23 +43,62 @@ export const stack = [
 
 export const heroStack = ['React', 'TypeScript', 'Java', 'Spring Boot', 'MySQL'];
 
-export const project = {
-  title: 'COLLEGE MANAGEMENT SYSTEM',
-  subtitle: 'Full-Stack Academic Platform',
-  description:
-    'A full-stack college management platform designed to bring academic and administrative workflows into one digital system.',
-  features: [
-    'Student & faculty management workflows',
-    'Academic administration interface',
-    'Responsive multi-page React frontend',
-    'Modern UI with multiple layout sections',
-  ],
-  tech: ['React', 'JavaScript', 'Tailwind CSS', 'Vite'],
-  liveUrl: 'https://college-management-lovat.vercel.app/',
-  githubUrl: 'https://github.com/asbin72/College_Management',
-  status: 'LIVE',
-  year: '2026',
-};
+export interface ProjectItem {
+  id: string;
+  title: string;
+  subtitle: string;
+  description: string;
+  features: string[];
+  tech: string[];
+  liveUrl: string;
+  githubUrl: string;
+  status: string;
+  year: string;
+  domain: string;
+}
+
+export const projects: ProjectItem[] = [
+  {
+    id: 'kss-petshop',
+    title: 'PAWFECTLY // KSS PET SHOP',
+    subtitle: 'Modern E-Commerce & Pet Care Platform',
+    description:
+      'An interactive pet shop and care management web application featuring a rich product catalog, pet wellness services, and an engaging responsive user experience.',
+    features: [
+      'Comprehensive pet supplies & nutrition product catalog',
+      'Pet adoption listings & veterinary appointment scheduling',
+      'Interactive shopping cart, category filtering & instant search',
+      'High-performance UI built with React & modern styling',
+    ],
+    tech: ['React', 'JavaScript', 'Tailwind CSS', 'Vite'],
+    liveUrl: 'https://kss-petshop-official.vercel.app/',
+    githubUrl: 'https://github.com/Kss-Official/KSS-PETSHOP-OFFICIAL',
+    status: 'LIVE',
+    year: '2026',
+    domain: 'kss-petshop-official.vercel.app',
+  },
+  {
+    id: 'college-management',
+    title: 'COLLEGE MANAGEMENT SYSTEM',
+    subtitle: 'Full-Stack Academic Platform',
+    description:
+      'A full-stack college management platform designed to bring academic and administrative workflows into one unified digital system.',
+    features: [
+      'Student & faculty administrative workflows',
+      'Academic course & department administration interface',
+      'Responsive multi-page React frontend with modern layouts',
+      'Interactive dashboard analytics and management metrics',
+    ],
+    tech: ['React', 'JavaScript', 'Tailwind CSS', 'Vite'],
+    liveUrl: 'https://college-management-lovat.vercel.app/',
+    githubUrl: 'https://github.com/asbin72/College_Management',
+    status: 'LIVE',
+    year: '2026',
+    domain: 'college-management-lovat.vercel.app',
+  },
+];
+
+export const project = projects[0];
 
 export const experience = [
   {

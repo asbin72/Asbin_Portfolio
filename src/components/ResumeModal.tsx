@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Download, ExternalLink, FileText, Layers } from 'lucide-react';
-import { personal, experience } from '../data/portfolio';
+import { personal, experience, projects } from '../data/portfolio';
 
 interface ResumeModalProps {
   isOpen: boolean;
@@ -221,6 +221,38 @@ export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                             <span className="text-xs font-mono text-neutral-400">{item.period}</span>
                           </div>
                           <span className="text-xs font-mono text-[#C8FF00] block mb-2">{item.company}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Featured Projects */}
+                  <div>
+                    <h4 className="text-xs font-mono tracking-widest text-[#C8FF00] uppercase mb-3">
+                      Featured Production Projects
+                    </h4>
+                    <div className="space-y-3">
+                      {projects.map((p) => (
+                        <div key={p.id} className="p-4 rounded border border-white/5 bg-[#111]">
+                          <div className="flex flex-wrap items-center justify-between gap-2 mb-1">
+                            <span className="font-bold text-white text-sm font-sans">{p.title}</span>
+                            <a
+                              href={p.liveUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-xs font-mono text-[#C8FF00] hover:underline inline-flex items-center gap-1"
+                            >
+                              Live App <ExternalLink size={11} />
+                            </a>
+                          </div>
+                          <p className="text-xs text-neutral-400 mb-2 leading-relaxed">{p.description}</p>
+                          <div className="flex flex-wrap gap-1.5">
+                            {p.tech.map((t) => (
+                              <span key={t} className="text-[10px] font-mono px-2 py-0.5 rounded bg-white/5 text-neutral-300">
+                                {t}
+                              </span>
+                            ))}
+                          </div>
                         </div>
                       ))}
                     </div>

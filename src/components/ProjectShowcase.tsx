@@ -1,11 +1,11 @@
 import { useState, useRef, useCallback } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
-import { ArrowUpRight, ExternalLink, Sparkles } from 'lucide-react';
-import { project } from '../data/portfolio';
+import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
+import { ArrowUpRight, ExternalLink, Sparkles, ShoppingBag, GraduationCap, ChevronRight } from 'lucide-react';
+import { projects, type ProjectItem } from '../data/portfolio';
 import { useInView, useReducedMotion } from '../hooks/usePortfolio';
 
-// Simplified browser frame mockup for the project
-function BrowserMockup() {
+// Mockup for College Management Platform
+function CollegeMockup() {
   return (
     <div className="browser-frame w-full shadow-2xl">
       {/* Browser chrome */}
@@ -41,7 +41,7 @@ function BrowserMockup() {
       {/* App interface mockup */}
       <div
         className="relative"
-        style={{ backgroundColor: '#0a0a0a', minHeight: '320px', overflow: 'hidden' }}
+        style={{ backgroundColor: '#0a0a0a', minHeight: '340px', overflow: 'hidden' }}
         aria-hidden="true"
       >
         {/* Mock navigation */}
@@ -49,7 +49,7 @@ function BrowserMockup() {
           style={{
             backgroundColor: '#111',
             borderBottom: '1px solid rgba(255,255,255,0.06)',
-            padding: '14px 24px',
+            padding: '12px 20px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
@@ -58,20 +58,24 @@ function BrowserMockup() {
           <div
             style={{
               fontFamily: "'Space Grotesk', sans-serif",
-              fontSize: '14px',
+              fontSize: '13px',
               fontWeight: 700,
               color: '#F5F5F5',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
             }}
           >
+            <GraduationCap size={15} className="text-[#C8FF00]" />
             Kalpanaaa Education
           </div>
-          <div className="flex gap-4">
-            {['Home', 'Courses', 'About', 'Contact'].map((item) => (
+          <div className="flex gap-3">
+            {['Dashboard', 'Courses', 'Faculty', 'Admissions'].map((item) => (
               <span
                 key={item}
                 style={{
                   fontFamily: "'Space Grotesk', sans-serif",
-                  fontSize: '12px',
+                  fontSize: '11px',
                   color: '#929292',
                 }}
               >
@@ -84,17 +88,20 @@ function BrowserMockup() {
         {/* Mock hero */}
         <div
           style={{
-            padding: '40px 24px',
-            background: 'linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%)',
+            padding: '32px 20px',
+            background: 'linear-gradient(135deg, #0f0f0f 0%, #171717 100%)',
           }}
         >
+          <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-[#C8FF00]/10 border border-[#C8FF00]/20 text-[10px] font-mono text-[#C8FF00] mb-2.5">
+            ACADEMIC SUITE 2026
+          </div>
           <div
             style={{
               fontFamily: "'Space Grotesk', sans-serif",
-              fontSize: 'clamp(18px, 3vw, 28px)',
+              fontSize: 'clamp(17px, 2.5vw, 24px)',
               fontWeight: 700,
               color: '#F5F5F5',
-              marginBottom: '12px',
+              marginBottom: '8px',
               lineHeight: 1.2,
             }}
           >
@@ -104,22 +111,22 @@ function BrowserMockup() {
           </div>
           <div
             style={{
-              fontSize: '13px',
+              fontSize: '12px',
               color: '#929292',
-              marginBottom: '20px',
-              maxWidth: '360px',
+              marginBottom: '16px',
+              maxWidth: '340px',
             }}
           >
-            Premier institution offering high-quality degree programs
+            Premier institution offering comprehensive degree programs & administrative tools.
           </div>
-          <div className="flex gap-3">
+          <div className="flex gap-2.5">
             <div
               style={{
                 backgroundColor: '#C8FF00',
                 color: '#070707',
-                fontSize: '11px',
+                fontSize: '10px',
                 fontWeight: 700,
-                padding: '8px 18px',
+                padding: '6px 14px',
                 borderRadius: '3px',
                 fontFamily: "'Space Grotesk', sans-serif",
               }}
@@ -130,13 +137,13 @@ function BrowserMockup() {
               style={{
                 border: '1px solid rgba(255,255,255,0.15)',
                 color: '#F5F5F5',
-                fontSize: '11px',
-                padding: '8px 18px',
+                fontSize: '10px',
+                padding: '6px 14px',
                 borderRadius: '3px',
                 fontFamily: "'Space Grotesk', sans-serif",
               }}
             >
-              Learn More
+              Faculty Portal
             </div>
           </div>
         </div>
@@ -154,7 +161,7 @@ function BrowserMockup() {
             <div
               key={stat.label}
               style={{
-                padding: '16px 20px',
+                padding: '14px 16px',
                 borderRight: '1px solid rgba(255,255,255,0.04)',
                 textAlign: 'center',
               }}
@@ -162,14 +169,201 @@ function BrowserMockup() {
               <div
                 style={{
                   fontFamily: "'Space Grotesk', sans-serif",
-                  fontSize: '20px',
+                  fontSize: '18px',
                   fontWeight: 700,
                   color: '#C8FF00',
                 }}
               >
                 {stat.value}
               </div>
-              <div style={{ fontSize: '11px', color: '#929292', marginTop: '2px' }}>
+              <div style={{ fontSize: '10px', color: '#929292', marginTop: '1px' }}>
+                {stat.label}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Mockup for Pawfectly KSS Pet Shop Platform
+function PetShopMockup() {
+  return (
+    <div className="browser-frame w-full shadow-2xl">
+      {/* Browser chrome */}
+      <div className="browser-bar">
+        <div className="browser-dot" style={{ backgroundColor: '#FF5F57' }} />
+        <div className="browser-dot" style={{ backgroundColor: '#FFBD2E' }} />
+        <div className="browser-dot" style={{ backgroundColor: '#28C840' }} />
+        <div
+          className="flex-1 ml-4 flex items-center"
+          style={{
+            backgroundColor: 'rgba(255,255,255,0.04)',
+            borderRadius: '4px',
+            padding: '4px 10px',
+            maxWidth: '260px',
+          }}
+        >
+          <span
+            style={{
+              fontFamily: "'JetBrains Mono', monospace",
+              fontSize: '10px',
+              color: '#929292',
+              letterSpacing: '0.03em',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            kss-petshop-official.vercel.app
+          </span>
+        </div>
+      </div>
+
+      {/* App interface mockup */}
+      <div
+        className="relative"
+        style={{ backgroundColor: '#090d0b', minHeight: '340px', overflow: 'hidden' }}
+        aria-hidden="true"
+      >
+        {/* Mock navigation */}
+        <div
+          style={{
+            backgroundColor: '#111a14',
+            borderBottom: '1px solid rgba(0, 158, 102, 0.2)',
+            padding: '12px 20px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
+        >
+          <div
+            style={{
+              fontFamily: "'Space Grotesk', sans-serif",
+              fontSize: '13px',
+              fontWeight: 700,
+              color: '#F5F5F5',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+            }}
+          >
+            <span className="text-base">🐾</span> Pawfectly.
+          </div>
+          <div className="flex items-center gap-3">
+            {['Shop Supplies', 'Pet Care', 'Adoption'].map((item) => (
+              <span
+                key={item}
+                style={{
+                  fontFamily: "'Space Grotesk', sans-serif",
+                  fontSize: '11px',
+                  color: '#a3c2af',
+                }}
+              >
+                {item}
+              </span>
+            ))}
+            <div className="flex items-center gap-1 bg-[#009E66]/20 border border-[#009E66]/40 px-2 py-0.5 rounded text-[10px] text-[#5eead4]">
+              <ShoppingBag size={11} /> Cart (3)
+            </div>
+          </div>
+        </div>
+
+        {/* Mock hero */}
+        <div
+          style={{
+            padding: '32px 20px',
+            background: 'linear-gradient(135deg, #0d1611 0%, #15271d 100%)',
+          }}
+        >
+          <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-[#009E66]/20 border border-[#009E66]/30 text-[10px] font-mono text-[#5eead4] mb-2.5">
+            ★ OFFICIAL KSS PET CARE PLATFORM
+          </div>
+          <div
+            style={{
+              fontFamily: "'Space Grotesk', sans-serif",
+              fontSize: 'clamp(17px, 2.5vw, 24px)',
+              fontWeight: 700,
+              color: '#F5F5F5',
+              marginBottom: '8px',
+              lineHeight: 1.2,
+            }}
+          >
+            Loving Care & Premium
+            <br />
+            Supplies For Your Pets
+          </div>
+          <div
+            style={{
+              fontSize: '12px',
+              color: '#a3c2af',
+              marginBottom: '16px',
+              maxWidth: '340px',
+            }}
+          >
+            Handcrafted nutrition, wellness essentials, and seamless adoption management.
+          </div>
+          <div className="flex gap-2.5">
+            <div
+              style={{
+                backgroundColor: '#009E66',
+                color: '#ffffff',
+                fontSize: '10px',
+                fontWeight: 700,
+                padding: '6px 14px',
+                borderRadius: '3px',
+                fontFamily: "'Space Grotesk', sans-serif",
+                boxShadow: '0 4px 12px rgba(0, 158, 102, 0.4)',
+              }}
+            >
+              Shop Essentials
+            </div>
+            <div
+              style={{
+                border: '1px solid rgba(255,255,255,0.15)',
+                color: '#F5F5F5',
+                fontSize: '10px',
+                padding: '6px 14px',
+                borderRadius: '3px',
+                fontFamily: "'Space Grotesk', sans-serif",
+              }}
+            >
+              Book Vet Checkup
+            </div>
+          </div>
+        </div>
+
+        {/* Mock stats row */}
+        <div
+          className="grid grid-cols-3 gap-0"
+          style={{ borderTop: '1px solid rgba(0, 158, 102, 0.15)' }}
+        >
+          {[
+            { label: 'Pet Products', value: '500+' },
+            { label: 'Organic Care', value: '100%' },
+            { label: 'Customer Rating', value: '4.9 ★' },
+          ].map((stat) => (
+            <div
+              key={stat.label}
+              style={{
+                padding: '14px 16px',
+                borderRight: '1px solid rgba(0, 158, 102, 0.15)',
+                textAlign: 'center',
+                backgroundColor: 'rgba(0, 158, 102, 0.03)',
+              }}
+            >
+              <div
+                style={{
+                  fontFamily: "'Space Grotesk', sans-serif",
+                  fontSize: '18px',
+                  fontWeight: 700,
+                  color: '#5eead4',
+                }}
+              >
+                {stat.value}
+              </div>
+              <div style={{ fontSize: '10px', color: '#88a894', marginTop: '1px' }}>
                 {stat.label}
               </div>
             </div>
@@ -186,6 +380,9 @@ interface ProjectShowcaseProps {
 }
 
 export default function ProjectShowcase({ onPlayClick, onPlayHover }: ProjectShowcaseProps) {
+  const [selectedProjectIndex, setSelectedProjectIndex] = useState(0);
+  const currentProject: ProjectItem = projects[selectedProjectIndex] || projects[0];
+
   const containerRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const [hovered, setHovered] = useState(false);
@@ -222,7 +419,7 @@ export default function ProjectShowcase({ onPlayClick, onPlayHover }: ProjectSho
         {/* Section header */}
         <motion.div
           ref={ref as React.Ref<HTMLDivElement>}
-          className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-16"
+          className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-12"
           initial={reduced ? {} : { opacity: 0, y: 30 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
@@ -230,7 +427,7 @@ export default function ProjectShowcase({ onPlayClick, onPlayHover }: ProjectSho
           <div>
             <span className="label-style flex items-center gap-2 mb-4" style={{ color: '#929292' }}>
               <Sparkles size={12} className="text-[#C8FF00]" />
-              FEATURED PROJECT
+              FEATURED PROJECTS ({projects.length})
             </span>
             <h2
               id="project-title"
@@ -247,15 +444,37 @@ export default function ProjectShowcase({ onPlayClick, onPlayHover }: ProjectSho
               <span style={{ color: '#C8FF00' }}>WORK</span>
             </h2>
           </div>
-          <div
-            style={{
-              fontFamily: "'JetBrains Mono', monospace",
-              fontSize: '11px',
-              color: '#929292',
-              letterSpacing: '0.1em',
-            }}
-          >
-            2026 // PRODUCTION
+
+          {/* Project Selector Tabs */}
+          <div className="flex flex-wrap items-center gap-2 p-1.5 rounded-lg bg-[#111] border border-white/10">
+            {projects.map((proj, idx) => {
+              const isActive = idx === selectedProjectIndex;
+              return (
+                <button
+                  key={proj.id}
+                  onClick={() => {
+                    setSelectedProjectIndex(idx);
+                    onPlayClick?.();
+                  }}
+                  onMouseEnter={() => onPlayHover?.()}
+                  className={`relative px-4 py-2 rounded-md text-xs font-mono transition-all flex items-center gap-2 cursor-pointer ${
+                    isActive ? 'text-black font-bold' : 'text-neutral-400 hover:text-white'
+                  }`}
+                >
+                  {isActive && (
+                    <motion.div
+                      layoutId="activeProjectTab"
+                      className="absolute inset-0 bg-[#C8FF00] rounded-md z-0"
+                      transition={{ type: 'spring', stiffness: 350, damping: 30 }}
+                    />
+                  )}
+                  <span className="relative z-10 opacity-70">0{idx + 1}.</span>
+                  <span className="relative z-10 truncate max-w-[150px] sm:max-w-none">
+                    {proj.id === 'kss-petshop' ? 'PAWFECTLY PET SHOP' : 'COLLEGE MANAGEMENT'}
+                  </span>
+                </button>
+              );
+            })}
           </div>
         </motion.div>
 
@@ -326,7 +545,7 @@ export default function ProjectShowcase({ onPlayClick, onPlayHover }: ProjectSho
                 </span>
 
                 {/* Tech badges */}
-                {project.tech.map((t) => (
+                {currentProject.tech.map((t) => (
                   <span
                     key={t}
                     onMouseEnter={() => onPlayHover?.()}
@@ -351,7 +570,7 @@ export default function ProjectShowcase({ onPlayClick, onPlayHover }: ProjectSho
               {/* Action buttons */}
               <div className="flex gap-3">
                 <a
-                  href={project.liveUrl}
+                  href={currentProject.liveUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => onPlayClick?.()}
@@ -370,14 +589,14 @@ export default function ProjectShowcase({ onPlayClick, onPlayHover }: ProjectSho
                     transition: 'all 0.2s',
                     cursor: 'none',
                   }}
-                  aria-label="Open live project in new tab"
+                  aria-label={`Open live ${currentProject.title} in new tab`}
                 >
                   LIVE SYSTEM
                   <ExternalLink size={12} />
                 </a>
 
                 <a
-                  href={project.githubUrl}
+                  href={currentProject.githubUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => onPlayClick?.()}
@@ -414,106 +633,121 @@ export default function ProjectShowcase({ onPlayClick, onPlayHover }: ProjectSho
             </div>
 
             {/* Main project content */}
-            <div className="relative z-10 grid lg:grid-cols-5 gap-0">
-              {/* Left: Info */}
-              <div
-                className="lg:col-span-2 p-8 lg:p-10"
-                style={{ borderRight: '1px solid rgba(255,255,255,0.05)' }}
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={currentProject.id}
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -15 }}
+                transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                className="relative z-10 grid lg:grid-cols-5 gap-0"
               >
-                <motion.h3
-                  style={{
-                    fontFamily: "'Space Grotesk', sans-serif",
-                    fontSize: 'clamp(22px, 3vw, 32px)',
-                    fontWeight: 700,
-                    color: '#F5F5F5',
-                    lineHeight: 1.15,
-                    marginBottom: '16px',
-                  }}
-                  animate={hovered ? { color: '#F5F5F5' } : {}}
+                {/* Left: Info */}
+                <div
+                  className="lg:col-span-2 p-8 lg:p-10"
+                  style={{ borderRight: '1px solid rgba(255,255,255,0.05)' }}
                 >
-                  {project.title}
-                </motion.h3>
-
-                <p
-                  style={{
-                    fontSize: '14px',
-                    color: '#929292',
-                    lineHeight: 1.7,
-                    marginBottom: '28px',
-                  }}
-                >
-                  {project.description}
-                </p>
-
-                {/* Features */}
-                <ul className="space-y-3">
-                  {project.features.map((feat, i) => (
-                    <motion.li
-                      key={i}
-                      className="flex items-start gap-3"
-                      initial={reduced ? {} : { opacity: 0, x: -10 }}
-                      animate={inView ? { opacity: 1, x: 0 } : {}}
-                      transition={{ delay: i * 0.08 + 0.3, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                    >
-                      <span
-                        className="mt-1 flex-shrink-0 w-1.5 h-1.5 rounded-full"
-                        style={{ backgroundColor: '#C8FF00', boxShadow: '0 0 6px rgba(200,255,0,0.5)' }}
-                      />
-                      <span style={{ fontSize: '13px', color: '#929292', lineHeight: 1.5 }}>
-                        {feat}
-                      </span>
-                    </motion.li>
-                  ))}
-                </ul>
-
-                {/* CTA arrow */}
-                <motion.div
-                  className="mt-8"
-                  animate={hovered ? { x: 4 } : { x: 0 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <a
-                    href={project.liveUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => onPlayClick?.()}
-                    className="inline-flex items-center gap-2 group"
+                  <div className="font-mono text-xs text-[#C8FF00] tracking-wider mb-2">
+                    {currentProject.subtitle}
+                  </div>
+                  <h3
                     style={{
-                      fontFamily: "'JetBrains Mono', monospace",
-                      fontSize: '11px',
-                      letterSpacing: '0.1em',
-                      color: '#C8FF00',
-                      textDecoration: 'none',
-                      cursor: 'none',
+                      fontFamily: "'Space Grotesk', sans-serif",
+                      fontSize: 'clamp(22px, 3vw, 32px)',
+                      fontWeight: 700,
+                      color: '#F5F5F5',
+                      lineHeight: 1.15,
+                      marginBottom: '16px',
                     }}
-                    aria-label="Explore live project"
                   >
-                    EXPLORE PROJECT
-                    <ArrowUpRight
-                      size={14}
-                      style={{
-                        transform: hovered ? 'translate(2px, -2px)' : 'translate(0,0)',
-                        transition: 'transform 0.3s',
-                      }}
-                    />
-                  </a>
-                </motion.div>
-              </div>
+                    {currentProject.title}
+                  </h3>
 
-              {/* Right: Browser mockup */}
-              <div className="lg:col-span-3 p-8 lg:p-10 flex items-center justify-center">
-                <motion.div
-                  animate={hovered ? { scale: 1.02 } : { scale: 1 }}
-                  transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                  style={{ transformOrigin: 'center', width: '100%' }}
-                >
-                  <BrowserMockup />
-                </motion.div>
-              </div>
-            </div>
+                  <p
+                    style={{
+                      fontSize: '14px',
+                      color: '#929292',
+                      lineHeight: 1.7,
+                      marginBottom: '28px',
+                    }}
+                  >
+                    {currentProject.description}
+                  </p>
+
+                  {/* Features */}
+                  <ul className="space-y-3">
+                    {currentProject.features.map((feat, i) => (
+                      <li
+                        key={i}
+                        className="flex items-start gap-3"
+                      >
+                        <span
+                          className="mt-1 flex-shrink-0 w-1.5 h-1.5 rounded-full"
+                          style={{ backgroundColor: '#C8FF00', boxShadow: '0 0 6px rgba(200,255,0,0.5)' }}
+                        />
+                        <span style={{ fontSize: '13px', color: '#929292', lineHeight: 1.5 }}>
+                          {feat}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  {/* Switch to next project CTA & Live link */}
+                  <div className="mt-8 flex flex-wrap items-center gap-4">
+                    <a
+                      href={currentProject.liveUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => onPlayClick?.()}
+                      className="inline-flex items-center gap-2 group font-mono text-[11px] tracking-wider text-[#C8FF00]"
+                      style={{ textDecoration: 'none', cursor: 'none' }}
+                      aria-label="Explore live project"
+                    >
+                      EXPLORE LIVE
+                      <ArrowUpRight
+                        size={14}
+                        style={{
+                          transform: hovered ? 'translate(2px, -2px)' : 'translate(0,0)',
+                          transition: 'transform 0.3s',
+                        }}
+                      />
+                    </a>
+
+                    <button
+                      onClick={() => {
+                        const nextIdx = (selectedProjectIndex + 1) % projects.length;
+                        setSelectedProjectIndex(nextIdx);
+                        onPlayClick?.();
+                      }}
+                      onMouseEnter={() => onPlayHover?.()}
+                      className="inline-flex items-center gap-1.5 font-mono text-[11px] text-neutral-400 hover:text-white px-2.5 py-1 rounded bg-white/5 border border-white/10 transition-colors"
+                    >
+                      <span>NEXT PROJECT</span>
+                      <ChevronRight size={12} />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Right: Browser mockup */}
+                <div className="lg:col-span-3 p-8 lg:p-10 flex items-center justify-center">
+                  <motion.div
+                    animate={hovered ? { scale: 1.02 } : { scale: 1 }}
+                    transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                    style={{ transformOrigin: 'center', width: '100%' }}
+                  >
+                    {currentProject.id === 'kss-petshop' ? (
+                      <PetShopMockup />
+                    ) : (
+                      <CollegeMockup />
+                    )}
+                  </motion.div>
+                </div>
+              </motion.div>
+            </AnimatePresence>
           </div>
         </motion.div>
       </div>
     </section>
   );
 }
+
