@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import LoadingScreen from './components/LoadingScreen';
 import CustomCursor from './components/CustomCursor';
 import Navbar from './components/Navbar';
@@ -10,15 +10,38 @@ import DeveloperDNA from './components/DeveloperDNA';
 import About from './components/About';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
-import ResumeModal from './components/ResumeModal';
+import CommandPalette from './components/CommandPalette';
+import { useSoundFx } from './hooks/useSoundFx';
 
 export default function App() {
   const [loaded, setLoaded] = useState(false);
-  const [resumeOpen, setResumeOpen] = useState(false);
+  const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
+
+  const { soundEnabled, toggleSound, playClick, playHover, playSuccess } = useSoundFx();
 
   const handleLoadComplete = useCallback(() => setLoaded(true), []);
-  const handleOpenResume = useCallback(() => setResumeOpen(true), []);
-  const handleCloseResume = useCallback(() => setResumeOpen(false), []);
+
+  const openResumeDirect = useCallback(() => {
+    playClick();
+    window.open('/resume.pdf', '_blank', 'noopener,noreferrer');
+  }, [playClick]);
+
+  const closeCommandPalette = useCallback(() => {
+    setIsCommandPaletteOpen(false);
+  }, []);
+
+  // Global keyboard shortcut Ctrl+K / Cmd+K
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setIsCommandPaletteOpen((prev) => !prev);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   return (
     <>
@@ -31,9 +54,6 @@ export default function App() {
       {/* Loading screen */}
       <LoadingScreen onComplete={handleLoadComplete} />
 
-      {/* Interactive Resume Modal */}
-      <ResumeModal isOpen={resumeOpen} onClose={handleCloseResume} />
-
       {/* Main content */}
       <div
         style={{
@@ -43,19 +63,46 @@ export default function App() {
         }}
         aria-hidden={!loaded}
       >
-        <Navbar onOpenResume={handleOpenResume} />
+        <Navbar
+          onPlayClick={playClick}
+          onPlayHover={playHover}
+        />
 
         <main id="main-content">
-          <Hero />
+          <Hero
+            onPlayClick={playClick}
+            onPlayHover={playHover}
+          />
           <Architecture />
-          <ProjectShowcase />
+          <ProjectShowcase
+            onPlayClick={playClick}
+            onPlayHover={playHover}
+          />
           <Experience />
-          <DeveloperDNA />
+          <DeveloperDNA
+            onPlayClick={playClick}
+            onPlayHover={playHover}
+          />
           <About />
-          <Contact />
+          <Contact
+            onPlayClick={playClick}
+            onPlayHover={playHover}
+            onPlaySuccess={playSuccess}
+          />
         </main>
 
         <Footer />
+
+        {/* Global Command Palette (accessible via Ctrl+K / Cmd+K) */}
+        <CommandPalette
+          isOpen={isCommandPaletteOpen}
+          onClose={closeCommandPalette}
+          onOpenResume={openResumeDirect}
+          soundEnabled={soundEnabled}
+          onToggleSound={toggleSound}
+          onPlayClick={playClick}
+          onPlaySuccess={playSuccess}
+        />
       </div>
     </>
   );

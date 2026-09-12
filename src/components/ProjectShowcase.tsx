@@ -1,14 +1,13 @@
-import { useState } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { ArrowUpRight, ExternalLink } from 'lucide-react';
-import { useRef } from 'react';
+import { ArrowUpRight, ExternalLink, Sparkles } from 'lucide-react';
 import { project } from '../data/portfolio';
 import { useInView, useReducedMotion } from '../hooks/usePortfolio';
 
 // Simplified browser frame mockup for the project
 function BrowserMockup() {
   return (
-    <div className="browser-frame w-full">
+    <div className="browser-frame w-full shadow-2xl">
       {/* Browser chrome */}
       <div className="browser-bar">
         <div className="browser-dot" style={{ backgroundColor: '#FF5F57' }} />
@@ -20,7 +19,7 @@ function BrowserMockup() {
             backgroundColor: 'rgba(255,255,255,0.04)',
             borderRadius: '4px',
             padding: '4px 10px',
-            maxWidth: '240px',
+            maxWidth: '260px',
           }}
         >
           <span
@@ -181,9 +180,16 @@ function BrowserMockup() {
   );
 }
 
-export default function ProjectShowcase() {
+interface ProjectShowcaseProps {
+  onPlayClick?: () => void;
+  onPlayHover?: () => void;
+}
+
+export default function ProjectShowcase({ onPlayClick, onPlayHover }: ProjectShowcaseProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
   const [hovered, setHovered] = useState(false);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const { ref, inView } = useInView(0.1);
   const reduced = useReducedMotion();
 
@@ -194,6 +200,15 @@ export default function ProjectShowcase() {
 
   const y = useTransform(scrollYProgress, [0, 1], reduced ? [0, 0] : [60, -60]);
   const scale = useTransform(scrollYProgress, [0, 0.5, 1], reduced ? [1, 1, 1] : [0.96, 1, 0.96]);
+
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    setMousePos({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    });
+  }, []);
 
   return (
     <section
@@ -213,7 +228,8 @@ export default function ProjectShowcase() {
           transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
         >
           <div>
-            <span className="label-style block mb-4" style={{ color: '#929292' }}>
+            <span className="label-style flex items-center gap-2 mb-4" style={{ color: '#929292' }}>
+              <Sparkles size={12} className="text-[#C8FF00]" />
               FEATURED PROJECT
             </span>
             <h2
@@ -239,31 +255,51 @@ export default function ProjectShowcase() {
               letterSpacing: '0.1em',
             }}
           >
-            2026
+            2026 // PRODUCTION
           </div>
         </motion.div>
 
-        {/* Project card */}
+        {/* Project card with interactive mouse spotlight */}
         <motion.div
           style={{ y, scale }}
           className="w-full"
         >
           <div
-            className="relative rounded-2xl overflow-hidden"
+            ref={cardRef}
+            className="relative rounded-2xl overflow-hidden transition-all duration-300"
             style={{
               border: hovered
-                ? '1px solid rgba(200,255,0,0.25)'
+                ? '1px solid rgba(200,255,0,0.35)'
                 : '1px solid rgba(255,255,255,0.06)',
               backgroundColor: '#111111',
-              transition: 'border-color 0.4s ease',
+              boxShadow: hovered ? '0 30px 80px rgba(0,0,0,0.8), 0 0 50px rgba(200,255,0,0.06)' : 'none',
             }}
             data-cursor="card"
-            onMouseEnter={() => setHovered(true)}
+            onMouseMove={handleMouseMove}
+            onMouseEnter={() => {
+              onPlayHover?.();
+              setHovered(true);
+            }}
             onMouseLeave={() => setHovered(false)}
           >
+            {/* Spotlight overlay following cursor */}
+            {hovered && (
+              <div
+                className="absolute pointer-events-none transition-opacity duration-300 z-0"
+                style={{
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  background: `radial-gradient(600px circle at ${mousePos.x}px ${mousePos.y}px, rgba(200,255,0,0.06), transparent 80%)`,
+                }}
+                aria-hidden="true"
+              />
+            )}
+
             {/* Top section with metadata */}
             <div
-              className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 p-8 lg:p-10"
+              className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 p-8 lg:p-10"
               style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}
             >
               <div className="flex flex-wrap items-center gap-3">
@@ -283,7 +319,7 @@ export default function ProjectShowcase() {
                   }}
                 >
                   <span
-                    className="w-1.5 h-1.5 rounded-full"
+                    className="w-1.5 h-1.5 rounded-full animate-pulse"
                     style={{ backgroundColor: '#C8FF00' }}
                   />
                   LIVE
@@ -293,6 +329,7 @@ export default function ProjectShowcase() {
                 {project.tech.map((t) => (
                   <span
                     key={t}
+                    onMouseEnter={() => onPlayHover?.()}
                     style={{
                       fontFamily: "'JetBrains Mono', monospace",
                       fontSize: '10px',
@@ -302,7 +339,9 @@ export default function ProjectShowcase() {
                       padding: '3px 10px',
                       borderRadius: '2px',
                       backgroundColor: 'rgba(255,255,255,0.02)',
+                      transition: 'all 0.2s',
                     }}
+                    className="hover:text-[#C8FF00] hover:border-[#C8FF00]/40"
                   >
                     {t}
                   </span>
@@ -315,38 +354,33 @@ export default function ProjectShowcase() {
                   href={project.liveUrl}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => onPlayClick?.()}
+                  onMouseEnter={() => onPlayHover?.()}
                   className="inline-flex items-center gap-2 group"
                   style={{
                     fontFamily: "'JetBrains Mono', monospace",
                     fontSize: '11px',
                     letterSpacing: '0.1em',
-                    color: '#C8FF00',
-                    backgroundColor: 'rgba(200,255,0,0.08)',
-                    border: '1px solid rgba(200,255,0,0.2)',
-                    padding: '8px 16px',
+                    color: '#070707',
+                    backgroundColor: '#C8FF00',
+                    fontWeight: 700,
+                    padding: '8px 18px',
                     borderRadius: '3px',
                     textDecoration: 'none',
                     transition: 'all 0.2s',
                     cursor: 'none',
                   }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = 'rgba(200,255,0,0.15)';
-                    e.currentTarget.style.borderColor = 'rgba(200,255,0,0.4)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = 'rgba(200,255,0,0.08)';
-                    e.currentTarget.style.borderColor = 'rgba(200,255,0,0.2)';
-                  }}
                   aria-label="Open live project in new tab"
                 >
                   LIVE SYSTEM
-                  <ExternalLink size={11} />
+                  <ExternalLink size={12} />
                 </a>
 
                 <a
                   href={project.githubUrl}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => onPlayClick?.()}
                   className="inline-flex items-center gap-2 group"
                   style={{
                     fontFamily: "'JetBrains Mono', monospace",
@@ -361,6 +395,7 @@ export default function ProjectShowcase() {
                     cursor: 'none',
                   }}
                   onMouseEnter={(e) => {
+                    onPlayHover?.();
                     e.currentTarget.style.color = '#F5F5F5';
                     e.currentTarget.style.borderColor = 'rgba(255,255,255,0.25)';
                   }}
@@ -379,7 +414,7 @@ export default function ProjectShowcase() {
             </div>
 
             {/* Main project content */}
-            <div className="grid lg:grid-cols-5 gap-0">
+            <div className="relative z-10 grid lg:grid-cols-5 gap-0">
               {/* Left: Info */}
               <div
                 className="lg:col-span-2 p-8 lg:p-10"
@@ -421,8 +456,8 @@ export default function ProjectShowcase() {
                       transition={{ delay: i * 0.08 + 0.3, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
                     >
                       <span
-                        className="mt-1 flex-shrink-0 w-1 h-1 rounded-full"
-                        style={{ backgroundColor: '#C8FF00' }}
+                        className="mt-1 flex-shrink-0 w-1.5 h-1.5 rounded-full"
+                        style={{ backgroundColor: '#C8FF00', boxShadow: '0 0 6px rgba(200,255,0,0.5)' }}
                       />
                       <span style={{ fontSize: '13px', color: '#929292', lineHeight: 1.5 }}>
                         {feat}
@@ -441,6 +476,7 @@ export default function ProjectShowcase() {
                     href={project.liveUrl}
                     target="_blank"
                     rel="noopener noreferrer"
+                    onClick={() => onPlayClick?.()}
                     className="inline-flex items-center gap-2 group"
                     style={{
                       fontFamily: "'JetBrains Mono', monospace",
@@ -465,11 +501,11 @@ export default function ProjectShowcase() {
               </div>
 
               {/* Right: Browser mockup */}
-              <div className="lg:col-span-3 p-8 lg:p-10">
+              <div className="lg:col-span-3 p-8 lg:p-10 flex items-center justify-center">
                 <motion.div
-                  animate={hovered ? { scale: 1.015 } : { scale: 1 }}
+                  animate={hovered ? { scale: 1.02 } : { scale: 1 }}
                   transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                  style={{ transformOrigin: 'center' }}
+                  style={{ transformOrigin: 'center', width: '100%' }}
                 >
                   <BrowserMockup />
                 </motion.div>

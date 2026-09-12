@@ -29,29 +29,29 @@
   --color-border: rgba(255, 255, 255, 0.06);
 }
 
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+@layer base {
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
 
-html {
-  scroll-behavior: smooth;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 
-body {
-  background-color: #070707;
-  color: #F5F5F5;
-  font-family: 'Space Grotesk', system-ui, sans-serif;
-  overflow-x: hidden;
-  cursor: auto;
-}
-
-@media (min-width: 1025px) and (pointer: fine) {
   body {
-    cursor: none;
+    background-color: #070707;
+    color: #F5F5F5;
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    overflow-x: hidden;
+    cursor: auto;
+  }
+
+  @media (min-width: 1025px) and (pointer: fine) {
+    body {
+      cursor: none;
+    }
   }
 }
 

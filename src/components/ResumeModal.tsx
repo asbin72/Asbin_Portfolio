@@ -110,9 +110,7 @@ export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                   <button
                     onClick={() => setViewMode('pdf')}
                     className={`flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-mono transition-colors ${
-                      viewMode === 'pdf'
-                        ? 'bg-[#C8FF00] text-black font-bold'
-                        : 'text-neutral-400 hover:text-white'
+                      viewMode === 'pdf' ? 'bg-[#C8FF00] text-black font-bold' : 'text-neutral-400 hover:text-white'
                     }`}
                   >
                     <FileText size={13} />
@@ -121,9 +119,7 @@ export default function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                   <button
                     onClick={() => setViewMode('text')}
                     className={`flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-mono transition-colors ${
-                      viewMode === 'text'
-                        ? 'bg-[#C8FF00] text-black font-bold'
-                        : 'text-neutral-400 hover:text-white'
+                      viewMode === 'text' ? 'bg-[#C8FF00] text-black font-bold' : 'text-neutral-400 hover:text-white'
                     }`}
                   >
                     <Layers size={13} />

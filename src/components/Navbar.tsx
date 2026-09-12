@@ -1,17 +1,29 @@
 import { useEffect, useRef, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useSpring } from 'framer-motion';
+import { FileText } from 'lucide-react';
 import { personal, navLinks } from '../data/portfolio';
 
 interface NavbarProps {
-  onOpenResume?: () => void;
+  onPlayClick?: () => void;
+  onPlayHover?: () => void;
 }
 
-export default function Navbar({ onOpenResume }: NavbarProps) {
+export default function Navbar({
+  onPlayClick,
+  onPlayHover,
+}: NavbarProps) {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('');
   const toggleButtonRef = useRef<HTMLButtonElement>(null);
   const drawerRef = useRef<HTMLDivElement>(null);
+
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001,
+  });
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);
@@ -82,6 +94,7 @@ export default function Navbar({ onOpenResume }: NavbarProps) {
   }, []);
 
   const handleNav = (href: string) => {
+    onPlayClick?.();
     setMenuOpen(false);
     const el = document.querySelector(href);
     if (el) {
@@ -97,20 +110,30 @@ export default function Navbar({ onOpenResume }: NavbarProps) {
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
       >
+        {/* Scroll Progress Neon Line */}
+        <motion.div
+          className="h-[2px] bg-[#C8FF00] origin-left shadow-[0_0_12px_#C8FF00]"
+          style={{ scaleX }}
+        />
+
         <div
           className="transition-all duration-500"
           style={{
             backgroundColor: scrolled ? 'rgba(7,7,7,0.92)' : 'transparent',
             backdropFilter: scrolled ? 'blur(20px)' : 'none',
             borderBottom: scrolled ? '1px solid rgba(255,255,255,0.05)' : '1px solid transparent',
-            padding: scrolled ? '16px 0' : '24px 0',
+            padding: scrolled ? '14px 0' : '22px 0',
           }}
         >
           <div className="container-custom flex items-center justify-between">
             {/* Logo */}
             <button
-              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-              className="group focus:outline-none"
+              onClick={() => {
+                onPlayClick?.();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              onMouseEnter={() => onPlayHover?.()}
+              className="group focus:outline-none flex items-center gap-2"
               aria-label="Back to top"
             >
               <span
@@ -136,6 +159,7 @@ export default function Navbar({ onOpenResume }: NavbarProps) {
                   <button
                     key={link.label}
                     onClick={() => handleNav(link.href)}
+                    onMouseEnter={() => onPlayHover?.()}
                     className="relative group focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
                     style={{
                       fontFamily: "'JetBrains Mono', monospace",
@@ -163,28 +187,14 @@ export default function Navbar({ onOpenResume }: NavbarProps) {
                 );
               })}
 
-              <button
-                onClick={() => {
-                  if (onOpenResume) {
-                    onOpenResume();
-                  } else {
-                    window.open(personal.resume || '/resume.pdf', '_blank');
-                  }
-                }}
-                className="group focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
-                style={{
-                  fontFamily: "'JetBrains Mono', monospace",
-                  fontSize: '11px',
-                  letterSpacing: '0.1em',
-                  color: '#C8FF00',
-                  border: '1px solid rgba(200,255,0,0.3)',
-                  padding: '8px 18px',
-                  borderRadius: '3px',
-                  backgroundColor: 'transparent',
-                  transition: 'all 0.2s',
-                  cursor: 'none',
-                }}
+              {/* RESUME button — directly opens PDF in new tab */}
+              <a
+                href={personal.resume || '/resume.pdf'}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => onPlayClick?.()}
                 onMouseEnter={(e) => {
+                  onPlayHover?.();
                   e.currentTarget.style.backgroundColor = 'rgba(200,255,0,0.1)';
                   e.currentTarget.style.borderColor = '#C8FF00';
                 }}
@@ -192,44 +202,59 @@ export default function Navbar({ onOpenResume }: NavbarProps) {
                   e.currentTarget.style.backgroundColor = 'transparent';
                   e.currentTarget.style.borderColor = 'rgba(200,255,0,0.3)';
                 }}
-                aria-label="View Resume Modal"
+                className="group focus:outline-none inline-flex items-center gap-1.5"
+                style={{
+                  fontFamily: "'JetBrains Mono', monospace",
+                  fontSize: '11px',
+                  letterSpacing: '0.1em',
+                  color: '#C8FF00',
+                  border: '1px solid rgba(200,255,0,0.3)',
+                  padding: '7px 18px',
+                  borderRadius: '3px',
+                  textDecoration: 'none',
+                  transition: 'all 0.2s',
+                  cursor: 'none',
+                }}
               >
+                <FileText size={12} />
                 RESUME
-              </button>
+              </a>
             </nav>
 
             {/* Mobile Menu Toggle */}
-            <button
-              ref={toggleButtonRef}
-              className="lg:hidden flex flex-col gap-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent p-2"
-              onClick={() => setMenuOpen(!menuOpen)}
-              aria-label={menuOpen ? 'Close menu' : 'Open menu'}
-              aria-expanded={menuOpen}
-            >
-              <motion.span
-                className="block h-px w-6 origin-center"
-                style={{ backgroundColor: '#F5F5F5' }}
-                animate={menuOpen ? { rotate: 45, y: 4 } : { rotate: 0, y: 0 }}
-                transition={{ duration: 0.3 }}
-              />
-              <motion.span
-                className="block h-px w-6"
-                style={{ backgroundColor: '#F5F5F5' }}
-                animate={menuOpen ? { opacity: 0, scaleX: 0 } : { opacity: 1, scaleX: 1 }}
-                transition={{ duration: 0.3 }}
-              />
-              <motion.span
-                className="block h-px w-6 origin-center"
-                style={{ backgroundColor: '#F5F5F5' }}
-                animate={menuOpen ? { rotate: -45, y: -4 } : { rotate: 0, y: 0 }}
-                transition={{ duration: 0.3 }}
-              />
-            </button>
+            <div className="lg:hidden flex items-center gap-2">
+              <button
+                ref={toggleButtonRef}
+                className="flex flex-col gap-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent p-2"
+                onClick={() => setMenuOpen(!menuOpen)}
+                aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+                aria-expanded={menuOpen}
+              >
+                <motion.span
+                  className="block h-px w-6 origin-center"
+                  style={{ backgroundColor: '#F5F5F5' }}
+                  animate={menuOpen ? { rotate: 45, y: 4 } : { rotate: 0, y: 0 }}
+                  transition={{ duration: 0.3 }}
+                />
+                <motion.span
+                  className="block h-px w-6"
+                  style={{ backgroundColor: '#F5F5F5' }}
+                  animate={menuOpen ? { opacity: 0, scaleX: 0 } : { opacity: 1, scaleX: 1 }}
+                  transition={{ duration: 0.3 }}
+                />
+                <motion.span
+                  className="block h-px w-6 origin-center"
+                  style={{ backgroundColor: '#F5F5F5' }}
+                  animate={menuOpen ? { rotate: -45, y: -4 } : { rotate: 0, y: 0 }}
+                  transition={{ duration: 0.3 }}
+                />
+              </button>
+            </div>
           </div>
         </div>
       </motion.header>
 
-      {/* Mobile Menu */}
+      {/* Mobile Menu Drawer */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div
@@ -270,52 +295,32 @@ export default function Navbar({ onOpenResume }: NavbarProps) {
                 </motion.button>
               ))}
 
-              <motion.button
-                onClick={() => {
-                  setMenuOpen(false);
-                  if (onOpenResume) {
-                    onOpenResume();
-                  } else {
-                    window.open(personal.resume || '/resume.pdf', '_blank');
-                  }
-                }}
-                className="focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
-                style={{
-                  fontFamily: "'JetBrains Mono', monospace",
-                  fontSize: '13px',
-                  letterSpacing: '0.12em',
-                  color: '#070707',
-                  backgroundColor: '#C8FF00',
-                  padding: '10px 24px',
-                  borderRadius: '3px',
-                  border: 'none',
-                  textDecoration: 'none',
-                  fontWeight: 700,
-                  cursor: 'pointer',
-                }}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.3 }}
-              >
-                VIEW RESUME
-              </motion.button>
-
-              <motion.a
-                href={`mailto:${personal.email}`}
-                className="text-base"
-                style={{
-                  fontFamily: "'JetBrains Mono', monospace",
-                  fontSize: '13px',
-                  letterSpacing: '0.1em',
-                  color: '#929292',
-                  textDecoration: 'none',
-                }}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.35 }}
-              >
-                {personal.email}
-              </motion.a>
+              <div className="flex flex-col sm:flex-row items-center gap-4 mt-4">
+                <motion.a
+                  href={personal.resume || '/resume.pdf'}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => setMenuOpen(false)}
+                  className="focus:outline-none inline-flex items-center gap-2"
+                  style={{
+                    fontFamily: "'JetBrains Mono', monospace",
+                    fontSize: '13px',
+                    letterSpacing: '0.12em',
+                    color: '#070707',
+                    backgroundColor: '#C8FF00',
+                    padding: '12px 28px',
+                    borderRadius: '3px',
+                    textDecoration: 'none',
+                    fontWeight: 700,
+                  }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.3 }}
+                >
+                  <FileText size={15} />
+                  RESUME
+                </motion.a>
+              </div>
             </div>
           </motion.div>
         )}

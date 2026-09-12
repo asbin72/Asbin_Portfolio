@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight, Sparkles } from 'lucide-react';
 import { personal, heroStack } from '../data/portfolio';
 import { useReducedMotion, useIsMobile } from '../hooks/usePortfolio';
 
@@ -127,11 +127,13 @@ function MagneticButton({
   href,
   onClick,
   primary = false,
+  onPlayHover,
 }: {
   children: React.ReactNode;
   href?: string;
   onClick?: () => void;
   primary?: boolean;
+  onPlayHover?: () => void;
 }) {
   const btnRef = useRef<HTMLAnchorElement & HTMLButtonElement>(null);
   const isMobile = useIsMobile();
@@ -157,7 +159,7 @@ function MagneticButton({
     display: 'inline-flex',
     alignItems: 'center',
     gap: '8px',
-    padding: primary ? '12px 26px' : '11px 22px',
+    padding: primary ? '12px 26px' : '11px 20px',
     fontFamily: "'JetBrains Mono', monospace",
     fontSize: '12px',
     letterSpacing: '0.12em',
@@ -180,6 +182,7 @@ function MagneticButton({
     onMouseMove,
     onMouseLeave,
     onMouseEnter: (e: React.MouseEvent<HTMLElement>) => {
+      onPlayHover?.();
       const el = e.currentTarget as HTMLElement;
       if (primary) el.style.backgroundColor = hoverStyle.backgroundColor!;
       else {
@@ -220,9 +223,32 @@ function MagneticButton({
   );
 }
 
-export default function Hero() {
+interface HeroProps {
+  onPlayClick?: () => void;
+  onPlayHover?: () => void;
+}
+
+export default function Hero({ onPlayClick, onPlayHover }: HeroProps) {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [currentTime, setCurrentTime] = useState('');
   const reduced = useReducedMotion();
+
+  useEffect(() => {
+    const updateTime = () => {
+      const now = new Date();
+      setCurrentTime(
+        now.toLocaleTimeString('en-US', {
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+          hour12: false,
+        })
+      );
+    };
+    updateTime();
+    const interval = setInterval(updateTime, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     if (reduced) return;
@@ -232,6 +258,7 @@ export default function Hero() {
   }, [reduced]);
 
   const handleWorkClick = () => {
+    onPlayClick?.();
     document.getElementById('project')?.scrollIntoView({ behavior: 'smooth' });
   };
 
@@ -271,23 +298,29 @@ export default function Hero() {
 
           {/* LEFT: Text content */}
           <div className="flex flex-col justify-center">
-            {/* Status badge */}
+            {/* Status badge with Live Time */}
             <motion.div
-              className="flex items-center gap-3 mb-10"
+              className="flex flex-wrap items-center gap-3 mb-8"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
             >
               <span
-                className="inline-flex items-center gap-2 label-style"
+                className="inline-flex items-center gap-2 label-style py-1 px-2.5 rounded border border-white/10 bg-white/5 backdrop-blur-sm"
                 style={{ color: '#929292' }}
               >
                 <span
-                  className="w-1.5 h-1.5 rounded-full"
-                  style={{ backgroundColor: '#C8FF00' }}
+                  className="w-2 h-2 rounded-full animate-pulse"
+                  style={{ backgroundColor: '#C8FF00', boxShadow: '0 0 8px #C8FF00' }}
                 />
-                AVAILABLE FOR WORK
+                AVAILABLE FOR ROLES
               </span>
+
+              {currentTime && (
+                <span className="hidden sm:inline-flex items-center gap-1.5 font-mono text-[11px] text-neutral-400 py-1 px-2.5 rounded border border-white/5 bg-white/[0.02]">
+                  <span className="text-[#C8FF00]">IST</span> {currentTime}
+                </span>
+              )}
             </motion.div>
 
             {/* Main headline */}
@@ -346,16 +379,17 @@ export default function Hero() {
 
             {/* CTAs */}
             <motion.div
-              className="flex flex-wrap gap-3 mb-10"
+              className="flex flex-wrap gap-3"
+              style={{ marginBottom: '28px' }}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.55, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
             >
-              <MagneticButton onClick={handleWorkClick} primary>
+              <MagneticButton onClick={handleWorkClick} primary onPlayHover={onPlayHover}>
                 EXPLORE MY WORK
                 <ArrowUpRight size={13} />
               </MagneticButton>
-              <MagneticButton href={`mailto:${personal.email}`}>
+              <MagneticButton href={`mailto:${personal.email}`} onPlayHover={onPlayHover}>
                 GET IN TOUCH
                 <ArrowUpRight size={13} />
               </MagneticButton>
@@ -363,8 +397,13 @@ export default function Hero() {
 
             {/* Thin separator */}
             <motion.div
-              className="mb-8"
-              style={{ height: '1px', backgroundColor: 'rgba(255,255,255,0.06)', maxWidth: '320px', transformOrigin: 'left' }}
+              style={{
+                height: '1px',
+                backgroundColor: 'rgba(255,255,255,0.08)',
+                maxWidth: '360px',
+                transformOrigin: 'left',
+                marginBottom: '24px',
+              }}
               initial={{ opacity: 0, scaleX: 0 }}
               animate={{ opacity: 1, scaleX: 1 }}
               transition={{ delay: 0.65, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
@@ -373,41 +412,49 @@ export default function Hero() {
 
             {/* Stack pills */}
             <motion.div
-              className="flex flex-wrap items-center gap-2"
+              className="flex flex-col gap-2.5"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.7, duration: 0.6 }}
             >
               <span
-                className="label-style w-full mb-2 block"
-                style={{ color: 'rgba(255,255,255,0.25)', fontSize: '9px' }}
+                className="label-style flex items-center gap-1.5"
+                style={{ color: 'rgba(255,255,255,0.3)', fontSize: '10px' }}
               >
-                BUILT WITH
+                <Sparkles size={11} className="text-[#C8FF00]" />
+                CORE TECH STACK
               </span>
-              {heroStack.map((tech, i) => (
-                <motion.span
-                  key={tech}
-                  initial={{ opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.75 + i * 0.06, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                >
-                  <span
-                    style={{
-                      fontFamily: "'JetBrains Mono', monospace",
-                      fontSize: '10px',
-                      letterSpacing: '0.06em',
-                      color: '#929292',
-                      border: '1px solid rgba(255,255,255,0.08)',
-                      padding: '4px 10px',
-                      borderRadius: '3px',
-                      backgroundColor: 'rgba(255,255,255,0.02)',
-                      display: 'inline-block',
-                    }}
+              <div className="flex flex-wrap items-center gap-2">
+                {heroStack.map((tech, i) => (
+                  <motion.span
+                    key={tech}
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.75 + i * 0.06, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                    whileHover={{ scale: 1.05, borderColor: '#C8FF00' }}
                   >
-                    {tech}
-                  </span>
-                </motion.span>
-              ))}
+                    <span
+                      onMouseEnter={() => onPlayHover?.()}
+                      style={{
+                        fontFamily: "'JetBrains Mono', monospace",
+                        fontSize: '11px',
+                        letterSpacing: '0.06em',
+                        color: '#929292',
+                        border: '1px solid rgba(255,255,255,0.08)',
+                        padding: '4px 12px',
+                        borderRadius: '3px',
+                        backgroundColor: 'rgba(255,255,255,0.02)',
+                        display: 'inline-block',
+                        transition: 'all 0.2s',
+                        cursor: 'none',
+                      }}
+                      className="hover:text-white hover:border-[#C8FF00]/40 hover:bg-[#C8FF00]/5"
+                    >
+                      {tech}
+                    </span>
+                  </motion.span>
+                ))}
+              </div>
             </motion.div>
           </div>
 

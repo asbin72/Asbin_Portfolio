@@ -7,7 +7,7 @@ export const personal = {
   role: 'Software Developer',
   email: 'asbinthomas15@gmail.com',
   github: 'https://github.com/asbin72',
-  linkedin: null, // No LinkedIn URL provided
+  linkedin: 'https://www.linkedin.com/in/asbin-t-s',
   resume: '/resume.pdf',
   tagline: 'I build digital systems that feel as good as they function.',
   about: "I'm Asbin T S, a Software Developer focused on building modern web applications and solving problems through clean, structured technology.",
