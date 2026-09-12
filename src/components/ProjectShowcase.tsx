@@ -278,7 +278,7 @@ function PetShopMockup() {
           }}
         >
           <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-[#009E66]/20 border border-[#009E66]/30 text-[10px] font-mono text-[#5eead4] mb-2.5">
-            ★ OFFICIAL KSS PET CARE PLATFORM
+            ★ PET CARE & WELLNESS PLATFORM
           </div>
           <div
             style={{
@@ -470,7 +470,7 @@ export default function ProjectShowcase({ onPlayClick, onPlayHover }: ProjectSho
                   )}
                   <span className="relative z-10 opacity-70">0{idx + 1}.</span>
                   <span className="relative z-10 truncate max-w-[150px] sm:max-w-none">
-                    {proj.id === 'kss-petshop' ? 'PAWFECTLY PET SHOP' : 'COLLEGE MANAGEMENT'}
+                    {proj.id === 'kss-petshop' ? 'PAWFECTLY' : 'COLLEGE MANAGEMENT'}
                   </span>
                 </button>
               );

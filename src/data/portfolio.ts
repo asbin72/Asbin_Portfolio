@@ -60,7 +60,7 @@ export interface ProjectItem {
 export const projects: ProjectItem[] = [
   {
     id: 'kss-petshop',
-    title: 'PAWFECTLY // KSS PET SHOP',
+    title: 'PAWFECTLY',
     subtitle: 'Modern E-Commerce & Pet Care Platform',
     description:
       'An interactive pet shop and care management web application featuring a rich product catalog, pet wellness services, and an engaging responsive user experience.',

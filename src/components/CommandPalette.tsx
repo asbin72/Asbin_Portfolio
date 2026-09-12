@@ -84,7 +84,7 @@ export default function CommandPalette({
     {
       id: 'project-petshop',
       category: 'Actions',
-      label: 'Open Pawfectly // KSS Pet Shop Live',
+      label: 'Open Pawfectly Live',
       description: 'kss-petshop-official.vercel.app',
       icon: <ExternalLink size={16} className="text-[#C8FF00]" />,
       action: () => {
